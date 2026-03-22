@@ -1,40 +1,23 @@
 "use strict";
-document.addEventListener("DOMContentLoaded", () => {
-  const userForm = new UserForm();
+const userForm = new UserForm();
 
-  userForm.loginFormCallback = async (data) => {
-    try {
-      await ApiConnector.login(data, handleLoginResponse);
-    } catch (err) {
-      showError(err.message);
+userForm.loginFormCallback = function (data) {
+  ApiConnector.login(data, function (response) {
+    if (response.success) {
+      location.reload();
+    } else {
+      userForm.setLoginErrorMessage(response.error);
     }
-  };
+  });
+};
 
-  userForm.registerFormCallback = async (data) => {
-    try {
-      await ApiConnector.register(data, handleRegisterResponse);
-    } catch (err) {
-      showError(err.message);
+userForm.registerFormCallback = function (data) {
+  ApiConnector.register(data, function (response) {
+    if (response.success) {
+      location.reload();
+    } else {
+      userForm.setRegisterErrorMessage(response.error);
     }
-  };
-});
+  });
+};
 
-async function handleLoginResponse(response) {
-  if (response.success) {
-    window.location.reload();
-  } else {
-    showError(response.error);
-  }
-}
-
-async function handleRegisterResponse(response) {
-  if (response.success) {
-    window.location.reload();
-  } else {
-    showError(response.error);
-  }
-}
-
-function showError(message) {
-  alert(message);
-}
